@@ -1,0 +1,90 @@
+{% load static %}
+{% load app_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{title}}</title>
+	<link type="text/css" href="{% static 'app/css/styles.css' %}" rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="{% static 'app/images/main.ico' %}" type="image/x-icon"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign=top>
+{% block mainmenu %}
+	<div class="header"><a href="{% url 'home' %}">The Most Influential Persons in History</a></div>
+{% endblock mainmenu %}
+
+
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+<tr>
+<!-- Sidebar слева -->
+	<td valign="top" class="left-chapters">
+	<ul id="leftchapters">
+{% if category_selected == 0 %}
+		<li class="selected">Все категории</li>
+{% else %}
+		<li><a href="{% url 'home' %}">Все категории</a></li>
+{% endif %}
+
+		{% show_categories 'name' category_selected %}
+
+	</ul>
+</td>
+<!-- Конец Sidebar'а -->
+<td valign="top" class="content">
+	<!-- Хлебные крошки -->
+	{% block breadcrumbs %}
+	{% endblock %}
+
+	<h1 class="cite"><i>«История мира — это биография великих людей»</i></h1>
+	<h1 class="cite-author"><i>Томас Карлейль</i></h1>
+	
+<!-- Блок контента -->
+	<div class="content-text">
+{% block content %}
+{% endblock %}
+		{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+	<ul>
+		{% if page_obj.number >= 4 %}
+		<li class="page-num">
+			<a href="?page=1">1</a>
+		</li>
+		<li class="page-num page-num-selected">...</li>
+		{% endif %}
+
+		{% for p in paginator.page_range %}
+		{% if page_obj.number == p %}
+		<li class="page-num page-num-selected">{{ p }}</li>
+		{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+		<li class="page-num">
+			<a href="?page={{ p }}">{{ p }}</a>
+		</li>
+		{% endif %}
+		{% endfor %}
+
+		{% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
+		<li class="page-num page-num-selected">...</li>
+		<li class="page-num">
+			<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+		</li>
+		{% endif %}
+	</ul>
+</nav>
+{% endif %}
+	</div>
+<!-- Конец блока контента -->
+
+</td></tr></table>
+</td></tr>
+<!-- Footer -->
+<tr><td valign=top>
+	<div id="footer">
+		<p>&copy; 2022</p>
+	</div>
+</td></tr></table>
+<!-- Конец footer'а и страницы -->
+</body>
+</html>
